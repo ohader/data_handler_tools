@@ -38,18 +38,41 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @var array
 	 */
 	protected $fields = array(
-		'__defaultElement' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 'l10n_parent', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id'),
+		'__defaultElement' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 'l10n_parent', 'l18n_parent', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id'),
 		'pages' => array('uid', 'pid', 'sorting', 'deleted', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id', 'title'),
 		'pages_language_overlay' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id', 'title'),
-		'tt_content' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 'l18n_parent', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id', 'header', 'image', 'categories', 'tx_irretutorial_hotels'),
+//		'tt_content' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 'l18n_parent', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id', 'header', 'image', 'categories', 'tx_irretutorial_1ncsv_hotels'),
+//		'tt_content' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 'l18n_parent', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id', 'header', 'image', 'categories'),
+//		'tt_content' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 'l18n_parent', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id', 'header', 'tx_testdatahandler_group'),
+//		'tt_content' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 'l18n_parent', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id', 'header', 'tx_irretutorial_1ncsv_hotels'),
+#		'tt_content' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 'l18n_parent', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id', 'header', 'tx_irretutorial_1nff_hotels'),
+//		'tt_content' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 'l18n_parent', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id', 'header', 'tx_irretutorial_mnmmasym_hotels'),
+#		'tt_content' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 'l18n_parent', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id', 'header'),
+		'tt_content' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 'l18n_parent', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id', 'header', 'image'),
 		'sys_language' => array('uid', 'pid', 'hidden', 'title', 'flag'),
 		'sys_category' => array('__defaultElement', 'title', 'parent', 'items'),
 		'sys_category_record_mm' => array('uid_local', 'uid_foreign', 'tablenames', 'sorting', 'sorting_foreign', 'fieldname',),
 		'sys_workspace' => array('uid', 'pid', 'deleted', 'title', 'adminusers' ,'members' ,'reviewers', 'db_mountpoints', 'file_mountpoints', 'publish_time,unpublish_time', 'freeze', 'live_edit', 'vtypes', 'disable_autocreate', 'swap_modes', 'publish_access', 'custom_stages', 'stagechg_notification', 'edit_notification_mode', 'edit_notification_defaults', 'edit_allow_notificaton_settings', 'publish_notification_mode', 'publish_notification_defaults', 'publish_allow_notificaton_settings'),
 		'sys_workspace_stage' => '*',
+		'be_users' => array('uid', 'pid', 'username', 'admin', 'usergroup', 'disable', 'realName', 'workspace_id', 'workspace_preview'),
+		'tx_testdatahandler_element' => array('__defaultElement', 'title'),
 		'tx_irretutorial_1nff_hotel' => array('__defaultElement', 'title', 'parentid', 'parenttable', 'parentidentifier', 'offers'),
 		'tx_irretutorial_1nff_offer' => array('__defaultElement', 'title', 'parentid', 'parenttable', 'parentidentifier', 'prices'),
 		'tx_irretutorial_1nff_price' => array('__defaultElement', 'title', 'parentid', 'parenttable', 'parentidentifier'),
+		'tx_irretutorial_1ncsv_hotel' => array('__defaultElement', 'title', 'offers'),
+		'tx_irretutorial_1ncsv_offer' => array('__defaultElement', 'title', 'prices'),
+		'tx_irretutorial_1ncsv_price' => array('__defaultElement', 'title'),
+		'tx_irretutorial_mnmmasym_hotel' => array('__defaultElement', 'title', 'offers'),
+		'tx_irretutorial_mnmmasym_offer' => array('__defaultElement', 'title', 'prices'),
+		'tx_irretutorial_mnmmasym_price' => array('__defaultElement', 'title'),
+		'tt_content_tx_irretutorial_mnmmasym_hotel_rel' => array('uid', 'uid_local', 'uid_foreign', 'tablenames', 'sorting', 'sorting_foreign'),
+		'tx_irretutorial_mnmmasym_hotel_offer_rel' => array('uid', 'uid_local', 'uid_foreign', 'tablenames', 'sorting', 'sorting_foreign'),
+		'tx_irretutorial_mnmmasym_offer_price_rel' => array('uid', 'uid_local', 'uid_foreign', 'tablenames', 'sorting', 'sorting_foreign'),
+		'sys_file_reference' => array('uid', 'pid', 'sorting', 'deleted', 'sys_language_uid', 'l10n_parent', 't3ver_wsid', 't3ver_state', 't3ver_stage', 't3ver_oid', 't3ver_move_id', 'uid_local', 'uid_foreign', 'tablenames', 'fieldname', 'sorting_foreign', 'table_local', 'title', 'description', 'alternative', 'link', 'downloadname'),
+		'sys_file' => array('__defaultElement', 'type', 'storage', 'identifier', 'extension', 'mime_type', 'name', 'sha1', 'size', 'creation_date', 'modification_date', 'missing', 'metadata', 'identifier_hash', 'folder_hash', 'last_indexed'),
+		'sys_file_storage' => '*',
+		'sys_file_metadata' => array('__defaultElement', 'file', 'title', 'width', 'height', 'description', 'alternative', 'categories'),
+		'sys_refindex' => array('hash', 'tablename', 'recuid', 'field', 'flexpointer', 'softref_key', 'softref_id', 'sorting', 'deleted', 'ref_table', 'ref_uid', 'ref_string', 'workspace'),
 	);
 
 	/**
@@ -144,6 +167,37 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 				'fields' => $fields,
 				'elements' => $elements,
 			);
+		}
+
+		if (!empty($data)) {
+			$this->getDataSet($data)->persist($fileName);
+		}
+	}
+
+	/**
+	 * @param array $tableNames
+	 * @param string $fileName
+	 */
+	public function exportTables(array $tableNames, $fileName) {
+		$data = array();
+
+		foreach ($tableNames as $tableName) {
+			$fields = $this->getFields($tableName);
+
+			$elements = $this->getDatabaseConnection()->exec_SELECTgetRows(
+				implode(', ', $fields),
+				$tableName,
+				'1=1',
+				'',
+				(in_array('uid', $fields) ? 'uid' : '')
+			);
+
+			if (!empty($elements)) {
+				$data[$tableName] = array(
+					'fields' => $fields,
+					'elements' => $elements,
+				);
+			}
 		}
 
 		if (!empty($data)) {
