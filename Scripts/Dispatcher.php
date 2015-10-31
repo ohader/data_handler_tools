@@ -25,5 +25,5 @@
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-\OliverHader\Datahandler\Service\ExportService::execute();
+\OliverHader\DataHandlerTools\Service\ExportService::execute();
 ?>

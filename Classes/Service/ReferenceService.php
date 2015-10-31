@@ -1,5 +1,5 @@
 <?php
-namespace OliverHader\Datahandler\Service;
+namespace OliverHader\DataHandlerTools\Service;
 
 /***************************************************************
  *  Copyright notice
@@ -44,7 +44,7 @@ class ReferenceService implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public static function getInstance() {
 		return GeneralUtility::makeInstance(
-			'OliverHader\\Datahandler\\Service\\ReferenceService'
+			'OliverHader\\DataHandlerTools\\Service\\ReferenceService'
 		);
 	}
 

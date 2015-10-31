@@ -1,5 +1,5 @@
 <?php
-namespace OliverHader\Datahandler\Service;
+namespace OliverHader\DataHandlerTools\Service;
 
 /***************************************************************
  *  Copyright notice
@@ -27,7 +27,9 @@ namespace OliverHader\Datahandler\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use \TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Tests\Functional\DataHandling\Framework\DataSet;
+use TYPO3\CMS\Core\Tests\FunctionalTestCase;
 
 /**
  * @author Oliver Hader <oliver.hader@typo3.org>
@@ -80,7 +82,7 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public static function getInstance() {
 		return GeneralUtility::makeInstance(
-			'OliverHader\\Datahandler\\Service\\ExportService'
+			'OliverHader\\DataHandlerTools\\Service\\ExportService'
 		);
 	}
 
@@ -202,6 +204,29 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 
 		if (!empty($data)) {
 			$this->getDataSet($data)->persist($fileName);
+		}
+	}
+
+	/**
+	 * @param DataSet $dataSet
+	 * @param FunctionalTestCase $test
+	 * @param $dataSetName
+	 */
+	public function reExportAll(DataSet $dataSet, FunctionalTestCase $test, $dataSetName) {
+		$this->setFields($dataSet);
+		$paths = explode('\\', get_class($test));
+		array_pop($paths);
+		$path = 'dataSets/' . implode('/', $paths);
+		GeneralUtility::mkdir_deep($path);
+		$this->exportTables($dataSet->getTableNames(), $path . '/' . $dataSetName . '.csv');
+	}
+
+	/**
+	 * @param DataSet $dataSet
+	 */
+	public function setFields(DataSet $dataSet) {
+		foreach ($dataSet->getTableNames() as $tableName) {
+			$this->fields[$tableName] = $dataSet->getFields($tableName);
 		}
 	}
 
