@@ -27,9 +27,12 @@ namespace OliverHader\DataHandlerTools\Service;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
+use Doctrine\DBAL\Schema\Column;
+use TYPO3\CMS\Core\Database\ConnectionPool;
+use TYPO3\CMS\Core\Database\Query\QueryBuilder;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Core\Tests\Functional\DataHandling\Framework\DataSet;
-use TYPO3\CMS\Core\Tests\FunctionalTestCase;
+use TYPO3\TestingFramework\Core\Functional\Framework\DataHandling\DataSet;
+use TYPO3\TestingFramework\Core\Functional\FunctionalTestCase;
 
 /**
  * @author Oliver Hader <oliver.hader@typo3.org>
@@ -125,13 +128,20 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 				continue;
 			}
 
-			$elements = $this->getDatabaseConnection()->exec_SELECTgetRows(
-				implode(', ', $fields),
-				$tableName,
-				'pid=' . (int)$pageId,
-				'',
-				'uid'
-			);
+            $queryBuilder = $this->createQueryBuilder($tableName);
+            $queryBuilder->where(
+                $queryBuilder->expr()->eq('pid', (int)$pageId)
+            );
+
+            if (in_array('uid', $fields)) {
+                $queryBuilder->orderBy('uid');
+            }
+
+            $elements = $queryBuilder
+                ->select(...$fields)
+                ->from($tableName)
+                ->execute()
+                ->fetchAll();
 
 			if (!empty($elements)) {
 				$data[$tableName] = array(
@@ -155,14 +165,24 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 		$data = array();
 
 		$fields = $this->getFields($tableName);
+        $queryBuilder = $this->createQueryBuilder($tableName);
 
-		$elements = $this->getDatabaseConnection()->exec_SELECTgetRows(
-			implode(', ', $fields),
-			$tableName,
-			(empty($idRange) ? '1=1' : 'uid>=' . $idRange[0] . ' AND uid<=' . $idRange[1]),
-			'',
-			(in_array('uid', $fields) ? 'uid' : '')
-		);
+        if (!empty($idRange)) {
+            $queryBuilder->where(
+                $queryBuilder->expr()->gte('uid', $idRange[0]),
+                $queryBuilder->expr()->lte('uid', $idRange[1])
+            );
+        }
+
+        if (in_array('uid', $fields)) {
+            $queryBuilder->orderBy('uid');
+        }
+
+        $elements = $queryBuilder
+            ->select(...$fields)
+            ->from($tableName)
+            ->execute()
+            ->fetchAll();
 
 		if (!empty($elements)) {
 			$data[$tableName] = array(
@@ -185,14 +205,17 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 
 		foreach ($tableNames as $tableName) {
 			$fields = $this->getFields($tableName);
+            $queryBuilder = $this->createQueryBuilder($tableName);
 
-			$elements = $this->getDatabaseConnection()->exec_SELECTgetRows(
-				implode(', ', $fields),
-				$tableName,
-				'1=1',
-				'',
-				(in_array('uid', $fields) ? 'uid' : '')
-			);
+            if (in_array('uid', $fields)) {
+                $queryBuilder->orderBy('uid');
+            }
+
+            $elements = $queryBuilder
+                ->select(...$fields)
+                ->from($tableName)
+                ->execute()
+                ->fetchAll();
 
 			if (!empty($elements)) {
 				$data[$tableName] = array(
@@ -210,7 +233,7 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 	/**
 	 * @param DataSet $dataSet
 	 * @param FunctionalTestCase $test
-	 * @param $dataSetName
+	 * @param string $dataSetName
 	 */
 	public function reExportAll(DataSet $dataSet, FunctionalTestCase $test, $dataSetName) {
 		$this->setFields($dataSet);
@@ -230,20 +253,33 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 		}
 	}
 
-	/**
-	 * @return array
-	 */
-	protected function getTableNames() {
-		return array_keys($this->getDatabaseConnection()->admin_get_tables());
-	}
+    /**
+     * @return string[]
+     */
+    protected function getTableNames()
+    {
+        return $this->getConnectionPool()
+            ->getConnectionByName(ConnectionPool::DEFAULT_CONNECTION_NAME)
+            ->getSchemaManager()
+            ->listTableNames();
+    }
 
-	/**
-	 * @param string $tableName
-	 * @return array
-	 */
-	protected function getFieldNames($tableName) {
-		return array_keys($this->getDatabaseConnection()->admin_get_fields($tableName));
-	}
+    /**
+     * @param string $tableName
+     * @return string[]
+     */
+    protected function getFieldNames($tableName)
+    {
+        return array_map(
+            function (Column $column) {
+                return $column->getName();
+            },
+            $this->getConnectionPool()
+                ->getConnectionForTable($tableName)
+                ->getSchemaManager()
+                ->listTableColumns($tableName)
+        );
+    }
 
 	/**
 	 * @param string $tableName
@@ -282,12 +318,24 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 		);
 	}
 
-	/**
-	 * @return \TYPO3\CMS\Core\Database\DatabaseConnection
-	 */
-	protected function getDatabaseConnection() {
-		return $GLOBALS['TYPO3_DB'];
-	}
+    /**
+     * @param string $tableName
+     * @return QueryBuilder
+     */
+    protected function createQueryBuilder(string $tableName)
+    {
+        $queryBuilder = $this->getConnectionPool()
+            ->getQueryBuilderForTable($tableName);
+        $queryBuilder->getRestrictions()->removeAll();
+        return $queryBuilder;
+    }
 
+    /**
+     * @return ConnectionPool
+     */
+    protected function getConnectionPool()
+    {
+        return GeneralUtility::makeInstance(ConnectionPool::class);
+    }
 }
 ?>
