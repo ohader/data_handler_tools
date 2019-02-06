@@ -82,4 +82,3 @@ class ReferenceService implements \TYPO3\CMS\Core\SingletonInterface {
 	}
 
 }
-?>

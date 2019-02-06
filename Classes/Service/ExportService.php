@@ -290,4 +290,3 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 	}
 
 }
-?>
