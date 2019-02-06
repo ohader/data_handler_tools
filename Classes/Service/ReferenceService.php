@@ -44,7 +44,7 @@ class ReferenceService implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public static function getInstance() {
 		return GeneralUtility::makeInstance(
-			'OliverHader\\DataHandlerTools\\Service\\ReferenceService'
+			ReferenceService::class
 		);
 	}
 
@@ -77,7 +77,7 @@ class ReferenceService implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	protected function getReferenceIndex() {
 		return GeneralUtility::makeInstance(
-			'TYPO3\\CMS\\Core\\Database\\ReferenceIndex'
+			\TYPO3\CMS\Core\Database\ReferenceIndex::class
 		);
 	}
 

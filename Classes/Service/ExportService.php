@@ -85,7 +85,7 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public static function getInstance() {
 		return GeneralUtility::makeInstance(
-			'OliverHader\\DataHandlerTools\\Service\\ExportService'
+			ExportService::class
 		);
 	}
 
@@ -309,11 +309,11 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 
 	/**
 	 * @param array $data
-	 * @return \TYPO3\CMS\Core\Tests\Functional\DataHandling\Framework\DataSet
+	 * @return DataSet
 	 */
 	protected function getDataSet(array $data) {
 		return GeneralUtility::makeInstance(
-			'TYPO3\\CMS\\Core\\Tests\\Functional\\DataHandling\\Framework\\DataSet',
+			DataSet::class,
 			$data
 		);
 	}
