@@ -26,4 +26,3 @@
  ***************************************************************/
 
 \OliverHader\DataHandlerTools\Service\ExportService::execute();
-?>

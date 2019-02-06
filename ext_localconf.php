@@ -7,4 +7,3 @@ $GLOBALS['TYPO3_CONF_VARS']['SC_OPTIONS']['GLOBAL']['cliKeys']['data_handler_too
 	'EXT:' . $_EXTKEY . '/Scripts/Dispatcher.php',
 	'_CLI_data_handler_tools',
 );
-?>
