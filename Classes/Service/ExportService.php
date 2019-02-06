@@ -80,6 +80,11 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 		'sys_refindex' => array('hash', 'tablename', 'recuid', 'field', 'flexpointer', 'softref_key', 'softref_id', 'sorting', 'deleted', 'ref_table', 'ref_uid', 'ref_string', 'workspace'),
 	);
 
+    /**
+     * @var string
+     */
+	private $exportPath = '';
+
 	/**
 	 * @return ExportService
 	 */
@@ -196,11 +201,26 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 		}
 	}
 
+    /**
+     * @param string $exportPath
+     */
+    public function setExportPath(string $exportPath)
+    {
+        if (!is_dir($exportPath)) {
+            throw new \RuntimeException(
+                sprintf('Directory %s does not exist', $exportPath),
+                1549384451
+            );
+        }
+        $this->exportPath = rtrim($exportPath, '/') . '/';
+    }
+
 	/**
 	 * @param array $tableNames
 	 * @param string $fileName
+     * @param null|int $padding
 	 */
-	public function exportTables(array $tableNames, $fileName) {
+	public function exportTables(array $tableNames, $fileName, int $padding = null) {
 		$data = array();
 
 		foreach ($tableNames as $tableName) {
@@ -226,7 +246,7 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 		}
 
 		if (!empty($data)) {
-			$this->getDataSet($data)->persist($fileName);
+			$this->getDataSet($data)->persist($fileName, $padding);
 		}
 	}
 
@@ -239,9 +259,13 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 		$this->setFields($dataSet);
 		$paths = explode('\\', get_class($test));
 		array_pop($paths);
-		$path = 'dataSets/' . implode('/', $paths);
+		$path = $this->exportPath . 'dataSets/' . implode('/', $paths);
 		GeneralUtility::mkdir_deep($path);
-		$this->exportTables($dataSet->getTableNames(), $path . '/' . $dataSetName . '.csv');
+		$this->exportTables(
+		    $dataSet->getTableNames(),
+            $path . '/' . $dataSetName . '.csv',
+            $dataSet->getMaximumPadding()
+        );
 	}
 
 	/**
