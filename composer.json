@@ -1,0 +1,19 @@
+{
+    "name": "oliver-hader/data-handler-tools",
+    "type": "typo3-cms-extension",
+    "require": {
+        "typo3/cms-core": "^9.5 || dev-master"
+    },
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "Oliver Hader",
+            "email": "oliver@typo3.org"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "OliverHader\\DataHandlerTools\\": "Classes/"
+        }
+    }
+}
