@@ -257,15 +257,48 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 	 */
 	public function reExportAll(DataSet $dataSet, FunctionalTestCase $test, $dataSetName) {
 		$this->setFields($dataSet);
+		$this->reExport($dataSet->getTableNames(), $test, $dataSetName);
+	}
+
+	/**
+	 * @param array $tableNames
+	 * @param FunctionalTestCase $test
+	 * @param string $dataSetName
+	 */
+	public function reExport(array $tableNames, FunctionalTestCase $test, $dataSetName)
+	{
 		$paths = explode('\\', get_class($test));
 		array_pop($paths);
 		$path = $this->exportPath . 'dataSets/' . implode('/', $paths);
 		GeneralUtility::mkdir_deep($path);
 		$this->exportTables(
-		    $dataSet->getTableNames(),
-            $path . '/' . $dataSetName . '.csv',
-            $dataSet->getMaximumPadding()
-        );
+			$tableNames,
+			$path . '/' . $dataSetName . '.csv',
+			$this->getMaximumPadding()
+		);
+	}
+
+	public function removeFieldName(string $tableName, string $fieldName)
+	{
+		$index = array_search($fieldName, $this->fields[$tableName] ?? [], true);
+		if ($index !== false) {
+			unset($this->fields[$tableName][$index]);
+			$this->fields[$tableName] = array_values($this->fields[$tableName]);
+		}
+	}
+
+	public function insertFieldName(string $tableName, string $fieldName, string $afterFieldName = null)
+	{
+		if (empty($this->fields[$tableName])) {
+			$this->fields[$tableName] = [];
+		}
+
+		$index = array_search($afterFieldName, $this->fields[$tableName]);
+		if ($index === false) {
+			$this->fields[$tableName][] = $fieldName;
+		} else {
+			array_splice($this->fields[$tableName], $index, 0, [$fieldName]);
+		}
 	}
 
 	/**
@@ -329,6 +362,16 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 		$fields = array_intersect($fields, $this->getFieldNames($tableName));
 
 		return $fields;
+	}
+
+	/**
+	 * @return int
+	 */
+	protected function getMaximumPadding(): int
+	{
+		$maximums = array_map('count', $this->fields);
+		// adding additional index since field values are indented by one
+		return max($maximums) + 1;
 	}
 
 	/**
