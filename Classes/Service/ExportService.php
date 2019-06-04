@@ -254,6 +254,7 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @param DataSet $dataSet
 	 * @param FunctionalTestCase $test
 	 * @param string $dataSetName
+	 * @deprecated Use setFields() & reExport() instead
 	 */
 	public function reExportAll(DataSet $dataSet, FunctionalTestCase $test, $dataSetName) {
 		$this->setFields($dataSet);
@@ -305,6 +306,7 @@ class ExportService implements \TYPO3\CMS\Core\SingletonInterface {
 	 * @param DataSet $dataSet
 	 */
 	public function setFields(DataSet $dataSet) {
+		$this->fields = [];
 		foreach ($dataSet->getTableNames() as $tableName) {
 			$this->fields[$tableName] = $dataSet->getFields($tableName);
 		}
